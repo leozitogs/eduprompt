@@ -2,7 +2,11 @@
 
 Plataforma educativa que gera conteúdo personalizado com IA utilizando técnicas avançadas de engenharia de prompt. Desenvolvido como desafio técnico para vaga de estágio em IA.
 
-## ✨ Funcionalidades
+### Site em produção (Deployed)
+A aplicação está disponível online:  
+**https://eduprompt-drab.vercel.app**
+
+## Funcionalidades
 
 - **Geração Personalizada**: Cria conteúdo educacional adaptado ao perfil do aluno (idade, nível, estilo de aprendizado)
 - **4 Tipos de Conteúdo**: Explicação Conceitual, Exemplos Práticos, Perguntas de Reflexão, Resumo Visual
@@ -13,7 +17,7 @@ Plataforma educativa que gera conteúdo personalizado com IA utilizando técnica
 - **Histórico de Gerações**: Todas as gerações são salvas automaticamente
 - **Interface Moderna**: Design responsivo com animações e UX polida
 
-## 🏛️ Arquitetura
+## Arquitetura
 
 **Backend**: Flask (Python) com API RESTful  
 **Frontend**: HTML5, CSS3, JavaScript Vanilla  
@@ -38,7 +42,7 @@ Plataforma educativa que gera conteúdo personalizado com IA utilizando técnica
 - `frontend/js/particles.js` — Animação de partículas do hero
 - `frontend/css/style.css` — Estilos com tema escuro, animações e responsividade
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Pré-requisitos
 
@@ -73,7 +77,7 @@ python app.py
 
 Acesse [http://localhost:5000](http://localhost:5000) no navegador.
 
-## 📝 API Endpoints
+## API Endpoints
 
 | Método | Endpoint | Descrição |
 |--------|----------|-----------|
@@ -88,7 +92,7 @@ Acesse [http://localhost:5000](http://localhost:5000) no navegador.
 | `GET` | `/api/samples/<arquivo>` | Obtém um sample específico |
 | `GET` | `/api/status` | Status do sistema (DB, cache, API) |
 
-## 🔧 Configuração
+## Configuração
 
 ### Variáveis de Ambiente
 
@@ -103,7 +107,7 @@ FLASK_DEBUG=false
 
 Se `DATABASE_URL` não for configurada, o sistema usa JSON local em `/data`.
 
-## 📂 Estrutura
+## Estrutura
 
 ```
 eduprompt/
@@ -133,7 +137,7 @@ eduprompt/
 └── PROMPT_ENGINEERING_NOTES.md
 ```
 
-## 🎯 Engenharia de Prompt
+## Engenharia de Prompt
 
 O sistema utiliza um motor dinâmico que constrói prompts otimizados para cada combinação de aluno, tópico e tipo de conteúdo. Técnicas aplicadas:
 
@@ -144,7 +148,7 @@ O sistema utiliza um motor dinâmico que constrói prompts otimizados para cada 
 
 Veja `PROMPT_ENGINEERING_NOTES.md` para análise detalhada das versões v1 e v2.
 
-## 🗄️ Banco de Dados
+## Banco de Dados
 
 ### Tabelas
 
@@ -177,7 +181,7 @@ cache_hit BOOLEAN
 criado_em TIMESTAMP
 ```
 
-## 🎨 Interface
+## Interface
 
 - **Hero Section**: Apresentação com animação de partículas
 - **Gerador**: Painel lateral com formulário + área de resultados
@@ -186,7 +190,7 @@ criado_em TIMESTAMP
 - **Histórico**: Lista de gerações anteriores com filtros
 - **Modal**: Visualização de conteúdo completo com Markdown renderizado
 
-## 📦 Dependências
+## Dependências
 
 ```
 flask==3.1.0
@@ -198,7 +202,7 @@ psycopg2-binary==2.9.10
 gunicorn==23.0.0
 ```
 
-## 📄 Licença
+## Licença
 
 Este projeto foi desenvolvido como desafio técnico. Sinta-se livre para usar como referência.
 
