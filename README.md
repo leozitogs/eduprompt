@@ -198,10 +198,6 @@ psycopg2-binary==2.9.10
 gunicorn==23.0.0
 ```
 
-## 🚀 Deploy
-
-Veja `GUIA_DEPLOY.md` para instruções de deploy em Render (backend), Vercel (frontend) e Neon (database).
-
 ## 📄 Licença
 
 Este projeto foi desenvolvido como desafio técnico. Sinta-se livre para usar como referência.
