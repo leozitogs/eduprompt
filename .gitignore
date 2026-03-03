@@ -1,0 +1,33 @@
+# Variáveis de ambiente (contém chaves secretas)
+.env
+
+# Cache da aplicação
+cache/
+
+# Histórico de gerações
+data/historico_geracoes.json
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Node (frontend separado para deploy)
+node_modules/
+dist/

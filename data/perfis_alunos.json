@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "nome": "Ana Silva",
+    "idade": 12,
+    "nivel": "iniciante",
+    "estilo_aprendizado": "visual",
+    "descricao": "Estudante do 7° ano que aprende melhor com diagramas, mapas mentais e representações gráficas."
+  },
+  {
+    "id": 2,
+    "nome": "Carlos Mendes",
+    "idade": 16,
+    "nivel": "intermediario",
+    "estilo_aprendizado": "leitura-escrita",
+    "descricao": "Estudante do ensino médio que prefere textos bem estruturados, anotações e resumos escritos."
+  },
+  {
+    "id": 3,
+    "nome": "Beatriz Oliveira",
+    "idade": 20,
+    "nivel": "avancado",
+    "estilo_aprendizado": "auditivo",
+    "descricao": "Universitária que absorve melhor conteúdo através de explicações verbais, discussões e podcasts."
+  },
+  {
+    "id": 4,
+    "nome": "Pedro Santos",
+    "idade": 10,
+    "nivel": "iniciante",
+    "estilo_aprendizado": "cinestesico",
+    "descricao": "Estudante do 5° ano que aprende melhor com atividades práticas, experimentos e interação física."
+  },
+  {
+    "id": 5,
+    "nome": "Mariana Costa",
+    "idade": 25,
+    "nivel": "avancado",
+    "estilo_aprendizado": "visual",
+    "descricao": "Profissional em transição de carreira que prefere infográficos, vídeos e representações visuais complexas."
+  }
+]

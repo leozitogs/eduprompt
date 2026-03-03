@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="EduPrompt — Plataforma educativa que gera conteúdo personalizado com IA usando técnicas avançadas de engenharia de prompt.">
+  <meta name="author" content="Leonardo Gonçalves Sobral">
+  <title>EduPrompt — Conteúdo Educacional com IA</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+  <link rel="stylesheet" href="css/style.css">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23FFF44F'/><text x='50' y='68' font-size='55' text-anchor='middle' font-weight='bold' fill='%232E2E2E'>E</text></svg>">
+</head>
+<body>
+
+  <nav class="navbar" id="navbar">
+    <a href="#" class="navbar-brand">
+      <div class="navbar-logo">E</div>
+      <span class="navbar-title">EduPrompt</span>
+    </a>
+    <ul class="navbar-nav">
+      <li><a href="#hero" class="active">Início</a></li>
+      <li><a href="#gerador">Gerador</a></li>
+      <li><a href="#perfis-section">Perfis</a></li>
+      <li><a href="#samples-section">Samples</a></li>
+      <li><a href="#historico">Histórico</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO SECTION -->
+  <section class="hero" id="hero">
+    <div class="hero-bg">
+      <canvas id="heroCanvas"></canvas>
+    </div>
+    <div class="hero-overlay"></div>
+    <div class="hero-grid"></div>
+    <div class="hero-shape hero-shape-1"></div>
+    <div class="hero-shape hero-shape-2"></div>
+    <div class="hero-shape hero-shape-3"></div>
+
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="hero-badge-dot"></span>
+        Powered by Gemini 2.5 Flash
+      </div>
+
+      <h1 class="hero-title">
+        Conteúdo educacional<br>
+        <span class="highlight">personalizado com IA</span>
+      </h1>
+
+      <p class="hero-subtitle">
+        Plataforma inteligente que gera materiais didáticos adaptados ao perfil de cada aluno, 
+        utilizando técnicas avançadas de engenharia de prompt para máxima qualidade pedagógica.
+      </p>
+
+      <div class="hero-actions">
+        <a href="#gerador" class="btn btn-primary">
+          <span>&#9889;</span> Começar a Gerar
+        </a>
+        <a href="#samples-section" class="btn btn-secondary">
+          <span>&#128214;</span> Ver Samples
+        </a>
+      </div>
+
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="hero-stat-number">4</div>
+          <div class="hero-stat-label">Tipos de Conteúdo</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-number" id="statPerfis">5</div>
+          <div class="hero-stat-label">Perfis de Alunos</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-number">2</div>
+          <div class="hero-stat-label">Versões de Prompt</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-number" id="statDB">&#9679;</div>
+          <div class="hero-stat-label">PostgreSQL</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-scroll-indicator">
+      <div class="scroll-mouse"></div>
+      <span>Role para explorar</span>
+    </div>
+  </section>
+
+  <!-- SEÇÃO GERADOR -->
+  <section class="app-section" id="gerador">
+    <div class="section-header">
+      <span class="section-tag">Gerador de Conteúdo</span>
+      <h2 class="section-title">Crie materiais educacionais personalizados</h2>
+      <p class="section-subtitle">
+        Selecione um perfil de aluno, defina o tópico e escolha o tipo de conteúdo que deseja gerar.
+      </p>
+    </div>
+
+    <div class="app-layout">
+      <div class="panel" id="formPanel">
+        <div class="panel-header">
+          <div class="panel-header-icon">&#9881;</div>
+          <h3>Configurações</h3>
+        </div>
+        <div class="panel-body">
+          <div class="form-group">
+            <label class="form-label" for="perfilSelect">Perfil do Aluno</label>
+            <select class="form-select" id="perfilSelect">
+              <option value="">Selecione um aluno...</option>
+            </select>
+            <div class="perfil-card" id="perfilCard">
+              <div class="perfil-card-info" id="perfilInfo"></div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="topicoInput">
+              Tópico
+              <span class="form-label-hint">— O que deseja ensinar?</span>
+            </label>
+            <input type="text" class="form-input" id="topicoInput" placeholder="Ex: Fotossíntese, Revolução Francesa, Algoritmos...">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="tipoSelect">Tipo de Conteúdo</label>
+            <select class="form-select" id="tipoSelect">
+              <option value="">Selecione o tipo...</option>
+              <option value="explicacao_conceitual">Explicação Conceitual</option>
+              <option value="exemplos_praticos">Exemplos Práticos</option>
+              <option value="perguntas_reflexao">Perguntas de Reflexão</option>
+              <option value="resumo_visual">Resumo Visual</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Versão do Prompt</label>
+            <div class="version-toggle">
+              <button class="version-btn active" data-version="v1" id="btnV1">v1 — Padrão</button>
+              <button class="version-btn" data-version="v2" id="btnV2">v2 — Avançado</button>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button class="btn-generate" id="btnGerar" disabled>
+              <span>&#10024;</span> Gerar Conteúdo
+            </button>
+            <button class="btn-generate-all" id="btnGerarTodos" disabled>
+              <span>&#128640;</span> Gerar Todos os Tipos
+            </button>
+            <button class="btn-compare" id="btnComparar" disabled>
+              <span>&#9878;</span> Comparar v1 vs v2
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="result-area" id="resultArea">
+        <div class="result-placeholder" id="resultPlaceholder">
+          <div class="result-placeholder-icon">&#127891;</div>
+          <h3>Nenhum conteúdo gerado ainda</h3>
+          <p>Configure os parâmetros ao lado e clique em "Gerar Conteúdo" para começar.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SEÇÃO PERFIS CUSTOMIZADOS -->
+  <section class="app-section" id="perfis-section">
+    <div class="section-header">
+      <span class="section-tag">Perfis de Alunos</span>
+      <h2 class="section-title">Gerencie perfis de alunos</h2>
+      <p class="section-subtitle">
+        Visualize os perfis existentes ou crie novos perfis customizados com seus próprios dados.
+      </p>
+    </div>
+
+    <div class="perfis-layout">
+      <div class="panel perfis-form-panel">
+        <div class="panel-header">
+          <div class="panel-header-icon">&#10133;</div>
+          <h3>Criar Novo Perfil</h3>
+        </div>
+        <div class="panel-body">
+          <div class="form-group">
+            <label class="form-label" for="novoNome">Nome do Aluno</label>
+            <input type="text" class="form-input" id="novoNome" placeholder="Ex: Maria Santos">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="novoIdade">Idade</label>
+            <input type="number" class="form-input" id="novoIdade" placeholder="Ex: 15" min="5" max="100">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="novoNivel">Nível de Conhecimento</label>
+            <select class="form-select" id="novoNivel">
+              <option value="">Selecione...</option>
+              <option value="iniciante">Iniciante</option>
+              <option value="intermediario">Intermediário</option>
+              <option value="avancado">Avançado</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="novoEstilo">Estilo de Aprendizado</label>
+            <select class="form-select" id="novoEstilo">
+              <option value="">Selecione...</option>
+              <option value="visual">Visual</option>
+              <option value="auditivo">Auditivo</option>
+              <option value="leitura-escrita">Leitura-Escrita</option>
+              <option value="cinestesico">Cinestésico</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="novoDescricao">
+              Descrição <span class="form-label-hint">— opcional</span>
+            </label>
+            <input type="text" class="form-input" id="novoDescricao" placeholder="Breve descrição do aluno...">
+          </div>
+          <button class="btn-generate" id="btnCriarPerfil">
+            <span>&#10024;</span> Criar Perfil
+          </button>
+        </div>
+      </div>
+
+      <div class="perfis-grid" id="perfisGrid">
+        <div class="historico-empty">
+          <p>Carregando perfis...</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SEÇÃO SAMPLES -->
+  <section class="app-section" id="samples-section">
+    <div class="section-header">
+      <span class="section-tag">Galeria de Samples</span>
+      <h2 class="section-title">Exemplos de conteúdo gerado</h2>
+      <p class="section-subtitle">
+        Explore os outputs pré-gerados para diferentes perfis e tópicos. Clique para visualizar o conteúdo completo.
+      </p>
+    </div>
+
+    <div class="samples-grid" id="samplesGrid">
+      <div class="historico-empty">
+        <p>Carregando samples...</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SEÇÃO HISTÓRICO -->
+  <section class="historico-section" id="historico">
+    <div class="section-header">
+      <span class="section-tag">Histórico</span>
+      <h2 class="section-title">Gerações anteriores</h2>
+      <p class="section-subtitle">
+        Todas as gerações são salvas automaticamente para consulta e comparação posterior.
+      </p>
+    </div>
+
+    <div class="historico-list" id="historicoList">
+      <div class="historico-empty" id="historicoEmpty">
+        <p>Nenhuma geração registrada ainda. Comece gerando conteúdo acima!</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p>
+      <strong>EduPrompt</strong> — Desenvolvido por 
+      <strong>Leonardo Gonçalves Sobral</strong> | 
+      Ciência da Computação — 3° Período |
+      Desafio Técnico — Estágio em IA e Engenharia de Prompt
+    </p>
+  </footer>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Modal para visualizar samples -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 id="modalTitle">Sample</h3>
+        <button class="modal-close" id="modalClose">&#10005;</button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <script src="js/particles.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
