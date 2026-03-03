@@ -5,3 +5,4 @@ openai==1.68.2
 requests==2.32.3
 psycopg2-binary==2.9.10
 gunicorn==23.0.0
+gevent>=23.9.1
