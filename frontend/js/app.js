@@ -3,7 +3,7 @@
  * Autor: Leonardo Gonçalves Sobral
  */
 
-const API_BASE = window.location.origin;
+const API_BASE = "https://eduprompt-ai.onrender.com";
 
 const state = {
   perfis: [],
