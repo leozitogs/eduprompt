@@ -26,8 +26,14 @@ import os
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 
-from backend.config import FLASK_HOST, FLASK_PORT, FLASK_DEBUG, validar_configuracao, DATABASE_URL
-from backend.perfis import carregar_perfis, obter_perfil_por_id, listar_perfis_resumo, adicionar_perfil, deletar_perfil, validar_perfil
+from backend.config import (
+    FLASK_HOST, FLASK_PORT, FLASK_DEBUG, validar_configuracao, DATABASE_URL,
+    MAX_TOPICO_LENGTH, MAX_PERFIS_CUSTOMIZADOS
+)
+from backend.perfis import (
+    carregar_perfis, obter_perfil_por_id, listar_perfis_resumo,
+    adicionar_perfil, deletar_perfil, validar_perfil
+)
 from backend.gerador import (
     gerar_conteudo,
     gerar_todos_conteudos,
@@ -45,6 +51,38 @@ app = Flask(
     static_url_path=""
 )
 CORS(app)
+
+# Limite de tamanho do body JSON (1 MB)
+app.config["MAX_CONTENT_LENGTH"] = 1 * 1024 * 1024
+
+
+# ─── Tratamento global de erros ───
+
+@app.errorhandler(404)
+def not_found(e):
+    return jsonify({"sucesso": False, "erro": "Recurso não encontrado"}), 404
+
+
+@app.errorhandler(413)
+def payload_too_large(e):
+    return jsonify({"sucesso": False, "erro": "Payload muito grande. Máximo: 1 MB"}), 413
+
+
+@app.errorhandler(405)
+def method_not_allowed(e):
+    return jsonify({"sucesso": False, "erro": "Método HTTP não permitido"}), 405
+
+
+@app.errorhandler(500)
+def internal_error(e):
+    return jsonify({"sucesso": False, "erro": "Erro interno do servidor"}), 500
+
+
+def _sanitizar_texto(texto, max_length=200):
+    """Remove espaços extras e limita o comprimento do texto."""
+    if not isinstance(texto, str):
+        return ""
+    return texto.strip()[:max_length]
 
 
 # ─── Rota principal ───
@@ -117,7 +155,7 @@ def api_gerar_conteudo():
             return jsonify({"sucesso": False, "erro": f"Campo obrigatório ausente: {campo}"}), 400
 
     perfil_id = dados["perfil_id"]
-    topico = dados["topico"].strip()
+    topico = _sanitizar_texto(dados.get("topico", ""), MAX_TOPICO_LENGTH)
     tipo_conteudo = dados["tipo_conteudo"]
     versao_prompt = dados.get("versao_prompt", "v1")
 
@@ -146,11 +184,14 @@ def api_gerar_todos():
         return jsonify({"sucesso": False, "erro": "Body JSON é obrigatório"}), 400
 
     perfil_id = dados.get("perfil_id")
-    topico = dados.get("topico", "").strip()
+    topico = _sanitizar_texto(dados.get("topico", ""), MAX_TOPICO_LENGTH)
     versao_prompt = dados.get("versao_prompt", "v1")
 
     if not perfil_id or not topico:
         return jsonify({"sucesso": False, "erro": "Campos obrigatórios: perfil_id, topico"}), 400
+
+    if versao_prompt not in ("v1", "v2"):
+        return jsonify({"sucesso": False, "erro": "Versão de prompt inválida. Use 'v1' ou 'v2'"}), 400
 
     try:
         resultados = gerar_todos_conteudos(perfil_id, topico, versao_prompt)
@@ -170,7 +211,7 @@ def api_comparar_versoes():
         return jsonify({"sucesso": False, "erro": "Body JSON é obrigatório"}), 400
 
     perfil_id = dados.get("perfil_id")
-    topico = dados.get("topico", "").strip()
+    topico = _sanitizar_texto(dados.get("topico", ""), MAX_TOPICO_LENGTH)
     tipo_conteudo = dados.get("tipo_conteudo")
 
     if not all([perfil_id, topico, tipo_conteudo]):
@@ -235,6 +276,11 @@ def api_listar_samples():
 
 @app.route("/api/samples/<nome_arquivo>", methods=["GET"])
 def api_obter_sample(nome_arquivo):
+    # Sanitizar nome do arquivo para evitar path traversal
+    nome_arquivo = os.path.basename(nome_arquivo)
+    if not nome_arquivo.endswith(".json") or ".." in nome_arquivo:
+        return jsonify({"sucesso": False, "erro": "Nome de arquivo inválido"}), 400
+
     sample = obter_sample(nome_arquivo)
     if sample:
         return jsonify({"sucesso": True, "dados": sample})

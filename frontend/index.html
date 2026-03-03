@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="EduPrompt | Conteúdo educacional personalizado com IA">
+  <meta name="theme-color" content="#2E2E2E">
   <meta name="author" content="Leonardo Gonçalves Sobral">
   <title>EduPrompt — Conteúdo Educacional com IA</title>
 
@@ -19,12 +20,17 @@
 </head>
 <body>
 
-  <nav class="navbar" id="navbar">
+  <nav class="navbar" id="navbar" role="navigation" aria-label="Navegação principal">
     <a href="#" class="navbar-brand">
-      <div class="navbar-logo">E</div>
+      <div class="navbar-logo" aria-hidden="true">E</div>
       <span class="navbar-title">EduPrompt</span>
     </a>
-    <ul class="navbar-nav">
+    <button class="navbar-toggle" id="navbarToggle" aria-label="Abrir menu" aria-expanded="false">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <ul class="navbar-nav" id="navbarNav">
       <li><a href="#hero" class="active">Início</a></li>
       <li><a href="#gerador">Gerador</a></li>
       <li><a href="#perfis-section">Perfis</a></li>

@@ -3,14 +3,13 @@
  * Autor: Leonardo Gonçalves Sobral
  */
 
-const API_BASE = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
-  ? `http://${window.location.hostname}:5001`
-  : "";
+const API_BASE = window.location.origin;
 
 const state = {
   perfis: [],
   versaoPrompt: "v1",
-  gerando: false
+  gerando: false,
+  menuAberto: false
 };
 
 // ─── Utilitários ───
@@ -38,24 +37,56 @@ function renderMarkdown(text) {
 async function api(endpoint, opts = {}) {
   const url = `${API_BASE}${endpoint}`;
   const config = { headers: { "Content-Type": "application/json" }, ...opts };
-  const res = await fetch(url, config);
-  const data = await res.json();
-  if (!data.sucesso) throw new Error(data.erro || "Erro desconhecido");
-  return data;
+  try {
+    const res = await fetch(url, config);
+    if (!res.ok && res.status >= 500) {
+      throw new Error(`Erro no servidor (${res.status}). Tente novamente.`);
+    }
+    const data = await res.json();
+    if (!data.sucesso) throw new Error(data.erro || "Erro desconhecido");
+    return data;
+  } catch (e) {
+    if (e.name === "TypeError" && e.message.includes("fetch")) {
+      throw new Error("Não foi possível conectar ao servidor. Verifique se o backend está rodando.");
+    }
+    throw e;
+  }
 }
 
 // ─── Navbar ───
 
 function initNavbar() {
   const navbar = $("#navbar");
+  const toggle = $("#navbarToggle");
+  const nav = $("#navbarNav");
+
   window.addEventListener("scroll", () => {
     navbar.classList.toggle("scrolled", window.scrollY > 50);
   });
+
+  // Hamburger menu toggle
+  if (toggle) {
+    toggle.addEventListener("click", () => {
+      state.menuAberto = !state.menuAberto;
+      toggle.classList.toggle("active", state.menuAberto);
+      nav.classList.toggle("open", state.menuAberto);
+      toggle.setAttribute("aria-expanded", state.menuAberto);
+      document.body.style.overflow = state.menuAberto ? "hidden" : "";
+    });
+  }
 
   $$(".navbar-nav a").forEach(link => {
     link.addEventListener("click", () => {
       $$(".navbar-nav a").forEach(l => l.classList.remove("active"));
       link.classList.add("active");
+      // Fechar menu mobile ao clicar em link
+      if (state.menuAberto) {
+        state.menuAberto = false;
+        toggle.classList.remove("active");
+        nav.classList.remove("open");
+        toggle.setAttribute("aria-expanded", "false");
+        document.body.style.overflow = "";
+      }
     });
   });
 }
@@ -334,6 +365,16 @@ async function criarPerfil() {
 
   if (!nome || !idade || !nivel || !estilo) {
     toast("Preencha todos os campos obrigatórios", "error");
+    return;
+  }
+
+  if (idade < 5 || idade > 100) {
+    toast("Idade deve ser entre 5 e 100 anos", "error");
+    return;
+  }
+
+  if (nome.length > 100) {
+    toast("Nome muito longo. Máximo: 100 caracteres", "error");
     return;
   }
 

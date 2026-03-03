@@ -8,7 +8,7 @@ Autor: Leonardo Gonçalves Sobral
 import json
 import os
 from datetime import datetime
-from backend.config import HISTORICO_PATH, SAMPLES_DIR
+from backend.config import HISTORICO_PATH, SAMPLES_DIR, MAX_HISTORICO_ENTRIES
 from backend.prompt_engine import (
     gerar_prompt,
     TIPOS_CONTEUDO,
@@ -169,13 +169,20 @@ def comparar_versoes_prompt(
 # ─────────────────────────────────────────────
 
 def _salvar_no_historico(resultado: dict) -> None:
-    """Salva um resultado no arquivo de histórico JSON."""
-    historico = carregar_historico()
-    historico.append(resultado)
+    """Salva um resultado no arquivo de histórico JSON com limite de entradas."""
+    try:
+        historico = carregar_historico()
+        historico.append(resultado)
 
-    os.makedirs(os.path.dirname(HISTORICO_PATH), exist_ok=True)
-    with open(HISTORICO_PATH, "w", encoding="utf-8") as f:
-        json.dump(historico, f, ensure_ascii=False, indent=2)
+        # Limitar tamanho do histórico para evitar crescimento indefinido
+        if len(historico) > MAX_HISTORICO_ENTRIES:
+            historico = historico[-MAX_HISTORICO_ENTRIES:]
+
+        os.makedirs(os.path.dirname(HISTORICO_PATH), exist_ok=True)
+        with open(HISTORICO_PATH, "w", encoding="utf-8") as f:
+            json.dump(historico, f, ensure_ascii=False, indent=2)
+    except OSError as e:
+        print(f"[Histórico] Erro ao salvar histórico: {e}")
 
 
 def carregar_historico() -> list[dict]:

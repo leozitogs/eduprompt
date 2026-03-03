@@ -7,7 +7,8 @@ Autor: Leonardo Gonçalves Sobral
 
 import json
 import os
-from backend.config import PERFIS_PATH
+import re
+from backend.config import PERFIS_PATH, MAX_NOME_LENGTH, MAX_DESCRICAO_LENGTH, MAX_PERFIS_CUSTOMIZADOS
 
 NIVEIS_VALIDOS = ["iniciante", "intermediario", "avancado"]
 ESTILOS_VALIDOS = ["visual", "auditivo", "leitura-escrita", "cinestesico"]
@@ -72,11 +73,19 @@ def listar_perfis_resumo() -> list[dict]:
 
 
 def validar_perfil(perfil: dict) -> list[str]:
+    """Valida os dados de um perfil de aluno com verificações robustas."""
     erros = []
     campos_obrigatorios = ["nome", "idade", "nivel", "estilo_aprendizado"]
     for campo in campos_obrigatorios:
         if campo not in perfil or not perfil[campo]:
             erros.append(f"Campo obrigatório ausente: {campo}")
+
+    if "nome" in perfil and perfil["nome"]:
+        nome = str(perfil["nome"]).strip()
+        if len(nome) > MAX_NOME_LENGTH:
+            erros.append(f"Nome muito longo. Máximo: {MAX_NOME_LENGTH} caracteres")
+        if not re.match(r'^[a-zA-ZÀ-ÿ\s\.\-]+$', nome):
+            erros.append("Nome contém caracteres inválidos")
 
     if "idade" in perfil:
         idade = perfil["idade"]
@@ -89,19 +98,38 @@ def validar_perfil(perfil: dict) -> list[str]:
     if "estilo_aprendizado" in perfil and perfil["estilo_aprendizado"] not in ESTILOS_VALIDOS:
         erros.append(f"Estilo inválido: {perfil['estilo_aprendizado']}. Válidos: {ESTILOS_VALIDOS}")
 
+    if "descricao" in perfil and perfil["descricao"]:
+        if len(str(perfil["descricao"])) > MAX_DESCRICAO_LENGTH:
+            erros.append(f"Descrição muito longa. Máximo: {MAX_DESCRICAO_LENGTH} caracteres")
+
     return erros
 
 
 def adicionar_perfil(perfil: dict) -> dict:
+    """Adiciona um novo perfil customizado com validações."""
     erros = validar_perfil(perfil)
     if erros:
         raise ValueError(f"Perfil inválido: {'; '.join(erros)}")
+
+    # Sanitizar campos de texto
+    perfil["nome"] = str(perfil["nome"]).strip()[:MAX_NOME_LENGTH]
+    if "descricao" in perfil and perfil["descricao"]:
+        perfil["descricao"] = str(perfil["descricao"]).strip()[:MAX_DESCRICAO_LENGTH]
 
     if _check_db():
         from backend.database import criar_perfil_db
         return criar_perfil_db(perfil)
 
     perfis = carregar_perfis()
+
+    # Verificar limite de perfis customizados
+    customizados = sum(1 for p in perfis if p.get("customizado", False))
+    if customizados >= MAX_PERFIS_CUSTOMIZADOS:
+        raise ValueError(
+            f"Limite de perfis customizados atingido ({MAX_PERFIS_CUSTOMIZADOS}). "
+            "Remova um perfil existente antes de criar outro."
+        )
+
     max_id = max((p.get("id", 0) for p in perfis), default=0)
     perfil["id"] = max_id + 1
     perfil["customizado"] = True
