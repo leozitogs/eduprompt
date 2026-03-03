@@ -14,7 +14,6 @@ garantindo especialização e qualidade máxima na saída.
 Autor: Leonardo Gonçalves Sobral
 """
 
-
 # ─────────────────────────────────────────────────────────────────
 # Mapeamentos de contexto para personalização dos prompts
 # ─────────────────────────────────────────────────────────────────
